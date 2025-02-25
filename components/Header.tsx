@@ -56,7 +56,7 @@ export const Header = ({ className }: HeaderProps) => {
     >
       <div className="container flex h-16 items-center justify-between">
         <Link
-          href={user ? "/projects" : "/"}
+          href="/"
           className="flex items-center space-x-2 font-bold text-xl hover:text-primary transition-colors"
         >
           HabitsHub

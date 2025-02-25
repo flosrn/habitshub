@@ -1,5 +1,6 @@
 "use client";
 
+import { VercelNavigationVariant1 } from "@/components/VercelNavigation";
 import { cn } from "@/lib/utils";
 import { useAccessStore } from "@/stores/useAccessStore";
 import { createClient } from "@/utils/supabase/client";
@@ -61,6 +62,8 @@ export const Header = ({ className }: HeaderProps) => {
         >
           HabitsHub
         </Link>
+
+        <VercelNavigationVariant1 />
 
         <div className="flex items-center gap-4">
           {user ? (

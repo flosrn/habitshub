@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { CreateCustomFieldOptionModal } from '@/components/CreateCustomFieldOptionModal';
-import { CreateOrEditLabelForm } from '@/components/CreateOrEditLabelForm';
-import { CustomFieldOptions } from '@/components/CustomFieldOptions';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { CreateCustomFieldOptionModal } from "@/components/CreateCustomFieldOptionModal";
+import { CreateOrEditLabelForm } from "@/components/CreateOrEditLabelForm";
+import { CustomFieldOptions } from "@/components/CustomFieldOptions";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -13,26 +13,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import {
   defaultLabels,
   defaultPriorities,
   defaultSizes,
   defaultStatuses,
-} from '@/consts/default-options';
-import { useModalDialog } from '@/hooks/useModalDialog';
-import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
-import { v4 as uid } from 'uuid';
-import { secondaryBtnStyles, successBtnStyles } from '../commonStyles';
-import { LabelList } from '../projects/[projectId]/settings/labels/LabelList';
-import { useRouter } from 'next/navigation';
-import { projects } from '@/utils/projects';
-import { useToast } from '@/components/ui/use-toast';
-import { createClient } from '@/utils/supabase/client';
+} from "@/consts/default-options";
+import { useModalDialog } from "@/hooks/useModalDialog";
+import { cn } from "@/lib/utils";
+import { projects } from "@/utils/projects";
+import { createClient } from "@/utils/supabase/client";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { v4 as uid } from "uuid";
+import { secondaryBtnStyles, successBtnStyles } from "../commonStyles";
+import { LabelList } from "../projects/[projectId]/settings/labels/LabelList";
 
 interface Props {
   projectDetails: {
@@ -55,24 +55,24 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
   const [isCreating, setIsCreating] = useState(false);
 
   const AddNewOptionBtn = (
-    <Button className={cn(secondaryBtnStyles, 'h-7 px-2 rounded-sm mr-2')}>
+    <Button className={cn(secondaryBtnStyles, "h-7 px-2 rounded-sm mr-2")}>
       <Plus className="w-4 h-4 mr-1" />
       New
     </Button>
   );
 
   const handleAddNewOptionItem = (
-    data: Omit<ICustomFieldData, 'id'>,
+    data: Omit<ICustomFieldData, "id">,
     state: CustomFieldDBTableName
   ) => {
     switch (state) {
-      case 'sizes':
+      case "sizes":
         setSizes([...sizes, { id: uid(), ...data }]);
         break;
-      case 'priorities':
+      case "priorities":
         setPriorities([...priorities, { id: uid(), ...data }]);
         break;
-      case 'statuses':
+      case "statuses":
         setStatuses([...statuses, { id: uid(), ...data }]);
         break;
       default:
@@ -97,7 +97,7 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
+      if (!session) throw new Error("Not authenticated");
 
       const projectData = {
         ...projectDetails,
@@ -110,6 +110,7 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
               labels,
             }),
       };
+      console.log("🚀 ~ handleCreateProject ~ projectData:", projectData);
 
       const project = await projects.management.create(
         projectData as ProjectWithOptions,
@@ -117,21 +118,21 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
       );
 
       toast({
-        title: 'Success',
-        description: 'Project created successfully',
+        title: "Success",
+        description: "Project created successfully",
       });
 
       closeModal();
       router.push(`/projects/${project.id}`);
     } catch (error) {
-      console.error('Error creating project:', error);
+      console.error("Error creating project:", error);
       toast({
-        variant: 'destructive',
-        title: 'Error',
+        variant: "destructive",
+        title: "Error",
         description:
           error instanceof Error
             ? error.message
-            : 'Failed to create project. Please try again.',
+            : "Failed to create project. Please try again.",
       });
     } finally {
       setIsCreating(false);
@@ -144,8 +145,8 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
         onClick={openModal}
         className={cn(
           successBtnStyles,
-          'w-28 flex items-center justify-center',
-          'disabled:cursor-not-allowed disabled:opacity-40'
+          "w-28 flex items-center justify-center",
+          "disabled:cursor-not-allowed disabled:opacity-40"
         )}
         disabled={!projectDetails.name}
       >
@@ -171,7 +172,7 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
             embeddedCreateOptionEle={
               <CreateCustomFieldOptionModal
                 title="Create new size option"
-                handleSubmit={(data) => handleAddNewOptionItem(data, 'sizes')}
+                handleSubmit={(data) => handleAddNewOptionItem(data, "sizes")}
                 triggerBtn={AddNewOptionBtn}
                 action="create-new-project"
               />
@@ -187,7 +188,7 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
               <CreateCustomFieldOptionModal
                 title="Create new priority option"
                 handleSubmit={(data) =>
-                  handleAddNewOptionItem(data, 'priorities')
+                  handleAddNewOptionItem(data, "priorities")
                 }
                 triggerBtn={AddNewOptionBtn}
                 action="create-new-project"
@@ -204,7 +205,7 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
               <CreateCustomFieldOptionModal
                 title="Create new status option"
                 handleSubmit={(data) =>
-                  handleAddNewOptionItem(data, 'statuses')
+                  handleAddNewOptionItem(data, "statuses")
                 }
                 triggerBtn={AddNewOptionBtn}
                 action="create-new-project"
@@ -216,7 +217,7 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
               <h1 className="text-lg py-3">Labels</h1>
               <Button
                 onClick={() => setShowNewLabelCard(true)}
-                className={cn(secondaryBtnStyles, 'h-7 px-2 rounded-sm mr-2')}
+                className={cn(secondaryBtnStyles, "h-7 px-2 rounded-sm mr-2")}
               >
                 <Plus className="w-4 h-4 mr-1" />
                 New
@@ -252,10 +253,10 @@ export const CreateProjectModal = ({ projectDetails }: Props) => {
           <div className="flex justify-end">
             <Button
               onClick={handleCreateProject}
-              className={cn(successBtnStyles, 'w-28')}
+              className={cn(successBtnStyles, "w-28")}
               disabled={isCreating}
             >
-              {isCreating ? 'Creating...' : 'Create'}
+              {isCreating ? "Creating..." : "Create"}
             </Button>
           </div>
         </DialogFooter>

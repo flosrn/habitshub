@@ -1,3 +1,4 @@
+import { RaycastCard } from "@/components/cuicui/RaycastCard";
 import { ModernAppleCardVariant1 } from "@/components/cuicui/ModernAppleCardVariant1";
 import { ModernAppleCardVariant2 } from "@/components/cuicui/ModernAppleCardVariant2";
 import { ModernInnerShadowCard } from "@/components/cuicui/ModernInnerShadowCard";
@@ -9,6 +10,7 @@ export default async function HubPage() {
         <ModernInnerShadowCard />
         <ModernAppleCardVariant1 />
         <ModernAppleCardVariant2 />
+        <RaycastCard />
       </div>
     </div>
   );

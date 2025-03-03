@@ -53,7 +53,11 @@ function getClassName(theme?: string) {
 
 async function getTheme() {
   const cookiesStore = await cookies();
-  return cookiesStore.get('theme')?.value as 'light' | 'dark' | 'system';
+  const themeCookie = cookiesStore.get('theme')?.value as
+    | 'light'
+    | 'dark'
+    | 'system';
+  return themeCookie ?? process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE ?? 'light';
 }
 
 export const generateMetadata = generateRootMetadata;

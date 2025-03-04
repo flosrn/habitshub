@@ -19,7 +19,7 @@
     "@kit/eslint-config": "workspace:*",
     "@kit/prettier-config": "workspace:*",
     "@kit/tsconfig": "workspace:*",
-    "@types/react": "npm:types-react@19.0.0-rc.1"
+    "@types/react": "npm:types-react@19.0.0-alpha.3"
   },
   "dependencies": {
     "pino": "^9.6.0"

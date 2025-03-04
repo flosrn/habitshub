@@ -27,7 +27,7 @@ async function UpdatePasswordPage(props: UpdatePasswordPageProps) {
   await requireUserInServerComponent();
 
   const { callback } = await props.searchParams;
-  const redirectTo = callback ?? pathsConfig.app.home;
+  const redirectTo = callback ?? pathsConfig.app.hub;
 
   return (
     <AuthLayoutShell Logo={Logo}>

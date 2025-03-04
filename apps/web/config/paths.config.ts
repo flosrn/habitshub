@@ -27,7 +27,7 @@ const pathsConfig = PathsSchema.parse({
   },
   app: {
     hub: '/hub',
-    demo: '/demo',
+    demo: '/hub/demo',
     profileSettings: '/hub/settings',
   },
 } satisfies z.infer<typeof PathsSchema>);

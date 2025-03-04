@@ -43,7 +43,7 @@ export function PersonalAccountDropdown({
   signOutRequested: () => unknown;
 
   paths: {
-    home: string;
+    hub: string;
   };
 
   features: {
@@ -136,7 +136,7 @@ export function PersonalAccountDropdown({
         <DropdownMenuItem asChild>
           <Link
             className={'s-full flex cursor-pointer items-center space-x-2'}
-            href={paths.home}
+            href={paths.hub}
           >
             <Home className={'h-5'} />
 

@@ -1,6 +1,6 @@
 import { PageBody, PageHeader } from '@kit/ui/page';
 
-import { DashboardDemo } from '~/hub/_components/dashboard-demo';
+import { DashboardStreaks } from '~/hub/_components/dashboard-streaks';
 
 export default function HubPage() {
   return (
@@ -8,7 +8,7 @@ export default function HubPage() {
       <PageHeader description={'Your SaaS at a glance'} />
 
       <PageBody>
-        <DashboardDemo />
+        <DashboardStreaks />
       </PageBody>
     </>
   );

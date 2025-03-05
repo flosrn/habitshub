@@ -12,6 +12,8 @@ const Tooltip = TooltipPrimitive.Root;
 
 const TooltipTrigger = TooltipPrimitive.Trigger;
 
+const TooltipPortal = TooltipPrimitive.Portal;
+
 const TooltipContent: React.FC<
   React.ComponentPropsWithRef<typeof TooltipPrimitive.Content>
 > = ({ className, sideOffset = 4, ...props }) => (
@@ -26,4 +28,10 @@ const TooltipContent: React.FC<
 );
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipProvider,
+  TooltipTrigger,
+};

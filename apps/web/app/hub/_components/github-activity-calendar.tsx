@@ -2,6 +2,7 @@ import React from 'react';
 
 import GitHubCalendar from 'react-github-calendar';
 
+import { useUser } from '@kit/supabase/hooks/use-user';
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +11,8 @@ import {
 } from '@kit/ui/tooltip';
 
 export default function GithubActivityCalendar() {
+  const { data: user } = useUser();
+
   const formatDate = (dateStr: string): string => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
@@ -21,9 +24,7 @@ export default function GithubActivityCalendar() {
 
   return (
     <GitHubCalendar
-      username="flosrn"
-      blockSize={12}
-      blockMargin={4}
+      username={user?.user_metadata.user_name}
       renderBlock={(block, value) => {
         return (
           <Tooltip>

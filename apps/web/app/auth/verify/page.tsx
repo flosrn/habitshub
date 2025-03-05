@@ -40,7 +40,7 @@ async function VerifyPage(props: Props) {
   }
 
   const nextPath = (await props.searchParams).next;
-  const redirectPath = nextPath ?? pathsConfig.app.home;
+  const redirectPath = nextPath ?? pathsConfig.app.hub;
 
   return (
     <MultiFactorChallengeContainer

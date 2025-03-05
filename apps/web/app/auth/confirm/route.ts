@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const service = createAuthCallbackService(getSupabaseServerClient());
 
   const url = await service.verifyTokenHash(request, {
-    redirectPath: pathsConfig.app.home,
+    redirectPath: pathsConfig.app.hub,
   });
 
   return NextResponse.redirect(url);

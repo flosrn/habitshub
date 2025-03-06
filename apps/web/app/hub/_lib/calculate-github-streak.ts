@@ -58,3 +58,63 @@ export function calculateGithubStreak(
     status: currentStreak > 0 ? ('up' as const) : ('stale' as const),
   };
 }
+
+/**
+ * Calculate the best GitHub streak (longest consecutive days with commits) in history
+ * @param contributionsData The GitHub contributions data
+ * @returns The best streak count and status
+ */
+export function calculateBestGithubStreak(
+  contributionsData: GithubContributionsData | undefined,
+) {
+  if (!contributionsData || !contributionsData.contributions) {
+    return { bestStreak: 0, status: 'stale' as const };
+  }
+
+  const contributions = contributionsData.contributions;
+
+  // Sort contributions by date (oldest to newest)
+  const sortedContributions = [...contributions].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+
+  let currentStreak = 0;
+  let bestStreak = 0;
+  let lastDate: Date | null = null;
+
+  // Iterate through all contributions to find the best streak
+  for (const day of sortedContributions) {
+    const date = new Date(day.date);
+
+    // If this is a valid contribution day
+    if (day.count > 0) {
+      // If this is the first day with contribution or follows the previous day
+      if (!lastDate || areDatesConsecutive(lastDate, date)) {
+        currentStreak++;
+        bestStreak = Math.max(bestStreak, currentStreak);
+      } else {
+        // Reset streak if days are not consecutive
+        currentStreak = 1;
+      }
+      lastDate = date;
+    } else {
+      // Reset streak on days with no contributions
+      currentStreak = 0;
+      lastDate = null;
+    }
+  }
+
+  return {
+    bestStreak,
+    status: bestStreak > 0 ? ('up' as const) : ('stale' as const),
+  };
+}
+
+/**
+ * Check if two dates are consecutive days
+ */
+function areDatesConsecutive(date1: Date, date2: Date): boolean {
+  const oneDayInMs = 24 * 60 * 60 * 1000;
+  const diffTime = Math.abs(date2.getTime() - date1.getTime());
+  return diffTime <= oneDayInMs;
+}

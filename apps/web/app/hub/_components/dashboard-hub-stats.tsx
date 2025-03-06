@@ -32,6 +32,7 @@ import {
 import { useGithubContributions } from '~/hub/_hooks/use-github-contributions';
 
 import { GithubActivity } from './github-activity';
+import { GithubBestStreak } from './github-best-streak';
 import { GithubStreak } from './github-streak';
 
 export default function DashboardHubStats() {
@@ -43,7 +44,6 @@ export default function DashboardHubStats() {
     isError: isGithubError,
   } = useGithubContributions(username);
 
-  const netRevenue = useMemo(() => generateDemoData(), []);
   const fees = useMemo(() => generateDemoData(), []);
   const newCustomers = useMemo(() => generateDemoData(), []);
 
@@ -64,26 +64,11 @@ export default function DashboardHubStats() {
           isError={isGithubError}
         />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className={'flex items-center gap-2.5'}>
-              <span>Revenue</span>
-              <Trend trend={'up'}>12%</Trend>
-            </CardTitle>
-
-            <CardDescription>
-              <span>Total revenue including fees</span>
-            </CardDescription>
-
-            <div>
-              <Figure>{`$${netRevenue[1]}`}</Figure>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <Chart data={netRevenue[0]} />
-          </CardContent>
-        </Card>
+        <GithubBestStreak
+          githubData={githubData}
+          isLoading={isGithubLoading}
+          isError={isGithubError}
+        />
 
         <Card>
           <CardHeader>

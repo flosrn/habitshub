@@ -523,7 +523,7 @@ export function GithubActivity() {
             Unable to load GitHub data. Please verify your username.
           </div>
         ) : (
-          <GithubActivityCalendar githubData={githubData} />
+          <GithubActivityCalendar githubContributionsData={githubData} />
         )}
       </CardContent>
 

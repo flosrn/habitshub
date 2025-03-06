@@ -26,13 +26,10 @@ import {
   TooltipTrigger,
 } from '@kit/ui/tooltip';
 
-import {
-  GithubContributionsData,
-  useGithubContributions,
-} from '../_hooks/use-github-contributions';
+import { GithubContributionsData } from '../_hooks/use-github-contributions';
 
 interface GithubActivityCalendarProps {
-  githubData?: GithubContributionsData;
+  githubContributionsData?: GithubContributionsData;
   defaultPeriodMonths?: number | 'all';
 }
 
@@ -43,7 +40,7 @@ type Period = '3' | '6' | '12' | 'all';
 const DEFAULT_WEEKS_PER_VIEW = 20;
 
 export default function GithubActivityCalendar({
-  githubData,
+  githubContributionsData,
   defaultPeriodMonths = 'all',
 }: GithubActivityCalendarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,10 +56,6 @@ export default function GithubActivityCalendar({
 
   const { data: user } = useUser();
   const username = user?.user_metadata?.user_name;
-  const { data: fetchedGithubData } = useGithubContributions(username);
-
-  // Use provided data or fetched data
-  const contributionsData = githubData || fetchedGithubData;
 
   // Adjust the number of visible weeks based on screen width
   useEffect(() => {
@@ -165,10 +158,10 @@ export default function GithubActivityCalendar({
 
   // Process data into a weekly structure
   const processedData = useMemo(() => {
-    if (!contributionsData)
+    if (!githubContributionsData)
       return { weeklyData: [], totalContributions: 0, totalWeeks: 0 };
 
-    const allData = contributionsData.contributions
+    const allData = githubContributionsData.contributions
       .map((contrib: { date: string; count: number; level: number }) => ({
         date: contrib.date,
         count: contrib.count,
@@ -229,7 +222,7 @@ export default function GithubActivityCalendar({
       totalContributions,
       totalWeeks: weeks.length,
     };
-  }, [contributionsData, startDateStr, todayStr]);
+  }, [githubContributionsData, startDateStr, todayStr]);
 
   // Determine which weeks to display, ensuring that the most recent are visible first
   const visibleData = useMemo(() => {
@@ -310,7 +303,7 @@ export default function GithubActivityCalendar({
   ));
   TooltipComponent.displayName = 'TooltipComponent';
 
-  if (!contributionsData) {
+  if (!githubContributionsData) {
     return (
       <div className="rounded-md border p-4 text-center">
         <p className="text-muted-foreground">

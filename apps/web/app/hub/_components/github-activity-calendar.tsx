@@ -346,8 +346,7 @@ export default function GithubActivityCalendar({
 
   return (
     <div ref={containerRef} className="w-full">
-      <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Code Activity</h2>
+      <div className="mb-2 flex items-center justify-end">
         <Select value={selectedPeriod} onValueChange={handlePeriodChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Period" />

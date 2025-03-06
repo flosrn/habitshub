@@ -29,6 +29,7 @@ import {
   TableRow,
 } from '@kit/ui/table';
 
+import { GithubContributionsChart } from '~/hub/_components/github-contributions-chart';
 import { useGithubContributions } from '~/hub/_hooks/use-github-contributions';
 
 import { GithubActivity } from './github-activity';
@@ -43,9 +44,6 @@ export default function DashboardHubStats() {
     isLoading: isGithubLoading,
     isError: isGithubError,
   } = useGithubContributions(username);
-
-  const fees = useMemo(() => generateDemoData(), []);
-  const newCustomers = useMemo(() => generateDemoData(), []);
 
   return (
     <div
@@ -70,47 +68,14 @@ export default function DashboardHubStats() {
           isError={isGithubError}
         />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className={'flex items-center gap-2.5'}>
-              <span>Fees</span>
-              <Trend trend={'up'}>9%</Trend>
-            </CardTitle>
-
-            <CardDescription>
-              <span>Total fees collected</span>
-            </CardDescription>
-
-            <div>
-              <Figure>{`$${fees[1]}`}</Figure>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <Chart data={fees[0]} />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className={'flex items-center gap-2.5'}>
-              <span>New Customers</span>
-              <Trend trend={'down'}>-25%</Trend>
-            </CardTitle>
-
-            <CardDescription>
-              <span>Customers who signed up this month</span>
-            </CardDescription>
-
-            <div>
-              <Figure>{`${Number(newCustomers[1]).toFixed(0)}`}</Figure>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <Chart data={newCustomers[0]} />
-          </CardContent>
-        </Card>
+        <div className="col-span-2 h-full">
+          <GithubContributionsChart
+            githubData={githubData}
+            isLoading={isGithubLoading}
+            isError={isGithubError}
+            username={username}
+          />
+        </div>
       </div>
 
       <GithubActivity

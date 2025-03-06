@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { ArrowDown, ArrowUp, Menu, TrendingUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, Menu } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from 'recharts';
 
 import { useUser } from '@kit/supabase/hooks/use-user';
@@ -11,7 +11,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@kit/ui/card';
@@ -30,11 +29,20 @@ import {
   TableRow,
 } from '@kit/ui/table';
 
-import GithubActivityCalendar from '~/hub/_components/github-activity-calendar';
 import { useGithubContributions } from '~/hub/_hooks/use-github-contributions';
 
+import { GithubActivity } from './github-activity';
+import { GithubStreak } from './github-streak';
+
 export default function DashboardHubStats() {
-  const mrr = useMemo(() => generateDemoData(), []);
+  const { data: user } = useUser();
+  const username = user?.user_metadata?.user_name;
+  const {
+    data: githubData,
+    isLoading: isGithubLoading,
+    isError: isGithubError,
+  } = useGithubContributions(username);
+
   const netRevenue = useMemo(() => generateDemoData(), []);
   const fees = useMemo(() => generateDemoData(), []);
   const newCustomers = useMemo(() => generateDemoData(), []);
@@ -50,26 +58,11 @@ export default function DashboardHubStats() {
           'grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
         }
       >
-        <Card>
-          <CardHeader>
-            <CardTitle className={'flex items-center gap-2.5'}>
-              <span>Streaks</span>
-              <Trend trend={'up'}>20%</Trend>
-            </CardTitle>
-
-            <CardDescription>
-              <span>{`The number of days in a row you code`}</span>
-            </CardDescription>
-
-            <div>
-              <Figure>{`$${mrr[1]}`}</Figure>
-            </div>
-          </CardHeader>
-
-          <CardContent className={'space-y-4'}>
-            {/* STREAK STATS HERE */}
-          </CardContent>
-        </Card>
+        <GithubStreak
+          githubData={githubData}
+          isLoading={isGithubLoading}
+          isError={isGithubError}
+        />
 
         <Card>
           <CardHeader>
@@ -135,7 +128,11 @@ export default function DashboardHubStats() {
         </Card>
       </div>
 
-      <GithubActivity />
+      <GithubActivity
+        githubData={githubData}
+        isLoading={isGithubLoading}
+        isError={isGithubError}
+      />
 
       <PageViewsChart />
 
@@ -492,54 +489,6 @@ function Trend(
         </span>
       </BadgeWithTrend>
     </div>
-  );
-}
-
-export function GithubActivity() {
-  const { data: user } = useUser();
-  const username = user?.user_metadata?.user_name;
-  const {
-    data: githubData,
-    isLoading,
-    isError,
-  } = useGithubContributions(username);
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Code Activity</CardTitle>
-        <CardDescription>
-          Showing the last 12 months of activity
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        {isLoading ? (
-          <div className="flex h-48 items-center justify-center">
-            <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-          </div>
-        ) : isError ? (
-          <div className="text-destructive py-8 text-center">
-            Unable to load GitHub data. Please verify your username.
-          </div>
-        ) : (
-          <GithubActivityCalendar githubContributionsData={githubData} />
-        )}
-      </CardContent>
-
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 leading-none font-medium">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="text-muted-foreground flex items-center gap-2 leading-none">
-              January - June 2024
-            </div>
-          </div>
-        </div>
-      </CardFooter>
-    </Card>
   );
 }
 

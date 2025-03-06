@@ -5,6 +5,7 @@ import React, { useMemo, useState } from 'react';
 import { ArrowDown, ArrowUp, Menu, TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from 'recharts';
 
+import { useUser } from '@kit/supabase/hooks/use-user';
 import { Badge } from '@kit/ui/badge';
 import {
   Card,
@@ -30,8 +31,9 @@ import {
 } from '@kit/ui/table';
 
 import GithubActivityCalendar from '~/hub/_components/github-activity-calendar';
+import { useGithubContributions } from '~/hub/_hooks/use-github-contributions';
 
-export default function DashboardDemo() {
+export default function DashboardHubStats() {
   const mrr = useMemo(() => generateDemoData(), []);
   const netRevenue = useMemo(() => generateDemoData(), []);
   const fees = useMemo(() => generateDemoData(), []);
@@ -51,12 +53,12 @@ export default function DashboardDemo() {
         <Card>
           <CardHeader>
             <CardTitle className={'flex items-center gap-2.5'}>
-              <span>MRR</span>
+              <span>Streaks</span>
               <Trend trend={'up'}>20%</Trend>
             </CardTitle>
 
             <CardDescription>
-              <span>Monthly recurring revenue</span>
+              <span>{`The number of days in a row you code`}</span>
             </CardDescription>
 
             <div>
@@ -65,7 +67,7 @@ export default function DashboardDemo() {
           </CardHeader>
 
           <CardContent className={'space-y-4'}>
-            <Chart data={mrr[0]} />
+            {/* STREAK STATS HERE */}
           </CardContent>
         </Card>
 
@@ -494,6 +496,14 @@ function Trend(
 }
 
 export function GithubActivity() {
+  const { data: user } = useUser();
+  const username = user?.user_metadata?.user_name;
+  const {
+    data: githubData,
+    isLoading,
+    isError,
+  } = useGithubContributions(username);
+
   return (
     <Card>
       <CardHeader>
@@ -504,7 +514,17 @@ export function GithubActivity() {
       </CardHeader>
 
       <CardContent>
-        <GithubActivityCalendar />
+        {isLoading ? (
+          <div className="flex h-48 items-center justify-center">
+            <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+          </div>
+        ) : isError ? (
+          <div className="text-destructive py-8 text-center">
+            Unable to load GitHub data. Please verify your username.
+          </div>
+        ) : (
+          <GithubActivityCalendar githubData={githubData} />
+        )}
       </CardContent>
 
       <CardFooter>

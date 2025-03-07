@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, Sparkles } from 'lucide-react';
 import type { Activity } from 'react-activity-calendar';
 import { ActivityCalendar } from 'react-activity-calendar';
 
@@ -25,6 +25,7 @@ import {
   TooltipPortal,
   TooltipTrigger,
 } from '@kit/ui/tooltip';
+import { cn } from '@kit/ui/utils';
 
 import { GithubContributionsData } from '../_hooks/use-github-contributions';
 
@@ -56,6 +57,7 @@ export default function GithubActivityCalendar({
 
   const { data: user } = useUser();
   const username = user?.user_metadata?.user_name;
+  const userAccountCreatedAt = user?.created_at;
 
   // Adjust the number of visible weeks based on screen width
   useEffect(() => {
@@ -114,6 +116,15 @@ export default function GithubActivityCalendar({
       }
     }, 100);
   }, [isLoadingData, visibleWeeksOffset, selectedPeriod, calendarRef]);
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      const calendarElement = calendarRef.current.querySelector(
+        '.react-activity-calendar__scroll-container',
+      );
+      (calendarElement as HTMLElement).style.overflow = 'visible';
+    }
+  }, [calendarRef, isLoadingData]);
 
   const formatDate = useCallback((dateStr: string): string => {
     const date = new Date(dateStr);
@@ -292,15 +303,76 @@ export default function GithubActivityCalendar({
     }
   }, [isLoadingData, visibleWeeksOffset, selectedPeriod]);
 
+  // Add CSS keyframes animation for the journey-start-block
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes fancy-stroke-pulse {
+        0% { 
+          stroke-width: 2px;
+          stroke-opacity: 0.7;
+          filter: drop-shadow(0 0 2px rgba(255, 0, 255, 0.7));
+        }
+        50% { 
+          stroke-width: 3px;
+          stroke-opacity: 1;
+          filter: drop-shadow(0 0 5px rgba(255, 0, 255, 0.9));
+        }
+        100% { 
+          stroke-width: 2px;
+          stroke-opacity: 0.7;
+          filter: drop-shadow(0 0 2px rgba(255, 0, 255, 0.7));
+        }
+      }
+      
+      .journey-start-block {
+        stroke: url(#journey-start-gradient);
+        stroke-width: 2px;
+        animation: fancy-stroke-pulse 2s infinite;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   // Custom tooltip component - memoized to avoid recalculations
-  const TooltipComponent = React.memo(({ date, count }: Activity) => (
-    <div className="text-center">
-      <p className="font-medium">
-        {count} contribution{count > 1 ? 's' : ''}
-      </p>
-      <p className="text-muted-foreground text-xs">{formatDate(date)}</p>
-    </div>
-  ));
+  const TooltipComponent = React.memo(
+    ({
+      date,
+      count,
+      isUserAccountCreatedAt,
+    }: Activity & { isUserAccountCreatedAt: boolean }) =>
+      isUserAccountCreatedAt ? (
+        <div className="relative overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-0.5">
+          <div className="relative rounded-md bg-white p-3 dark:bg-slate-950">
+            <div className="flex flex-col items-center space-y-2 text-center">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-400 to-pink-500 text-white">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <h3 className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text font-semibold text-transparent">
+                Your journey began here!
+              </h3>
+              <p className="text-md text-muted-foreground font-medium">
+                {count} contribution{count > 1 ? 's' : ''}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {formatDate(date)}
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="p-1.5 text-center">
+          <p className="font-medium">
+            {count} contribution{count > 1 ? 's' : ''}
+          </p>
+          <p className="text-muted-foreground text-xs">{formatDate(date)}</p>
+        </div>
+      ),
+  );
   TooltipComponent.displayName = 'TooltipComponent';
 
   if (!githubContributionsData) {
@@ -346,6 +418,25 @@ export default function GithubActivityCalendar({
 
   return (
     <div ref={containerRef} className="w-full">
+      {/* SVG Gradient definition for the stroke */}
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <linearGradient
+            id="journey-start-gradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop offset="0%" stopColor="#ff00ff" />
+            <stop offset="25%" stopColor="#9400d3" />
+            <stop offset="50%" stopColor="#4b0082" />
+            <stop offset="75%" stopColor="#9400d3" />
+            <stop offset="100%" stopColor="#ff00ff" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       <div className="mb-2 flex items-center justify-end">
         <Select value={selectedPeriod} onValueChange={handlePeriodChange}>
           <SelectTrigger className="w-[180px]">
@@ -416,27 +507,45 @@ export default function GithubActivityCalendar({
                   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                   totalCount: `${processedData.totalContributions} contributions`,
                 }}
-                renderBlock={(block, value) => (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      {React.cloneElement(block, {
-                        style: {
-                          ...((block.props.style as React.CSSProperties) || {}),
-                          cursor: 'pointer',
-                        },
-                      })}
-                    </TooltipTrigger>
-                    <TooltipPortal>
-                      <TooltipContent side="top" sideOffset={5}>
-                        <TooltipComponent
-                          date={value.date}
-                          count={value.count}
-                          level={value.level}
-                        />
-                      </TooltipContent>
-                    </TooltipPortal>
-                  </Tooltip>
-                )}
+                renderBlock={(block, value) => {
+                  const isUserAccountCreatedAt =
+                    value.date.split('T')[0] ===
+                    userAccountCreatedAt?.split('T')[0];
+                  return (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        {React.cloneElement(block, {
+                          style: {
+                            ...((block.props.style as React.CSSProperties) ||
+                              {}),
+                            cursor: 'pointer',
+                            ...(isUserAccountCreatedAt
+                              ? {}
+                              : { stroke: 'none' }),
+                          },
+                          className: cn(
+                            block.props.className,
+                            isUserAccountCreatedAt ? 'journey-start-block' : '',
+                          ),
+                        })}
+                      </TooltipTrigger>
+                      <TooltipPortal>
+                        <TooltipContent
+                          side="top"
+                          sideOffset={5}
+                          className="p-0"
+                        >
+                          <TooltipComponent
+                            date={value.date}
+                            count={value.count}
+                            level={value.level}
+                            isUserAccountCreatedAt={isUserAccountCreatedAt}
+                          />
+                        </TooltipContent>
+                      </TooltipPortal>
+                    </Tooltip>
+                  );
+                }}
                 theme={{
                   light: [
                     '#f0f0f0',

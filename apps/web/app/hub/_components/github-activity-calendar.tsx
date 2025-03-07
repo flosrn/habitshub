@@ -311,17 +311,17 @@ export default function GithubActivityCalendar({
         0% { 
           stroke-width: 2px;
           stroke-opacity: 0.7;
-          filter: drop-shadow(0 0 2px rgba(255, 0, 255, 0.7));
+          filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
         }
         50% { 
           stroke-width: 3px;
           stroke-opacity: 1;
-          filter: drop-shadow(0 0 5px rgba(255, 0, 255, 0.9));
+          filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.9));
         }
         100% { 
           stroke-width: 2px;
           stroke-opacity: 0.7;
-          filter: drop-shadow(0 0 2px rgba(255, 0, 255, 0.7));
+          filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
         }
       }
       
@@ -428,11 +428,11 @@ export default function GithubActivityCalendar({
             x2="100%"
             y2="100%"
           >
-            <stop offset="0%" stopColor="#ff00ff" />
-            <stop offset="25%" stopColor="#9400d3" />
-            <stop offset="50%" stopColor="#4b0082" />
-            <stop offset="75%" stopColor="#9400d3" />
-            <stop offset="100%" stopColor="#ff00ff" />
+            <stop offset="0%" stopColor="#ffd700" />
+            <stop offset="25%" stopColor="#d4af37" />
+            <stop offset="50%" stopColor="#b8860b" />
+            <stop offset="75%" stopColor="#d4af37" />
+            <stop offset="100%" stopColor="#ffd700" />
           </linearGradient>
         </defs>
       </svg>
@@ -511,6 +511,13 @@ export default function GithubActivityCalendar({
                   const isUserAccountCreatedAt =
                     value.date.split('T')[0] ===
                     userAccountCreatedAt?.split('T')[0];
+
+                  // Check if the date is after the user account creation date
+                  const isAfterRegistration = userAccountCreatedAt
+                    ? new Date(value.date).setHours(0, 0, 0, 0) >
+                      new Date(userAccountCreatedAt).setHours(0, 0, 0, 0)
+                    : false;
+
                   return (
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -519,9 +526,16 @@ export default function GithubActivityCalendar({
                             ...((block.props.style as React.CSSProperties) ||
                               {}),
                             cursor: 'pointer',
-                            ...(isUserAccountCreatedAt
-                              ? {}
+                            ...(isAfterRegistration
+                              ? {
+                                  stroke: '#ffd700',
+                                  strokeWidth: 0.5,
+                                  strokeOpacity: 1,
+                                }
                               : { stroke: 'none' }),
+                            border: isUserAccountCreatedAt
+                              ? '2px solid #ffd700'
+                              : 'none',
                           },
                           className: cn(
                             block.props.className,

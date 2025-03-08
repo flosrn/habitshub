@@ -464,7 +464,7 @@ export default function GithubActivityCalendar({
 
                   // Check if the date is after the user account creation date
                   const isAfterRegistration = userAccountCreatedAt
-                    ? new Date(value.date).setHours(0, 0, 0, 0) >
+                    ? new Date(value.date).setHours(0, 0, 0, 0) >=
                       new Date(userAccountCreatedAt).setHours(0, 0, 0, 0)
                     : false;
 
@@ -481,7 +481,7 @@ export default function GithubActivityCalendar({
                                   stroke: '#ffd700',
                                   strokeWidth: 0.5,
                                 }
-                              : { stroke: 'none' }),
+                              : { stroke: 'none', opacity: 0.5 }),
                             border: isUserAccountCreatedAt
                               ? '2px solid #ffd700'
                               : 'none',

@@ -52,7 +52,7 @@
 
 .journey-start-block {
   stroke: url(#journey-start-gradient);
-  stroke-width: 2px;
+  stroke-width: 0.5px;
   animation: fancy-stroke-pulse 2s infinite;
   animation-timing-function: ease-in-out;
 }

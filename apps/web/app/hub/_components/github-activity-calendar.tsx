@@ -303,41 +303,6 @@ export default function GithubActivityCalendar({
     }
   }, [isLoadingData, visibleWeeksOffset, selectedPeriod]);
 
-  // Add CSS keyframes animation for the journey-start-block
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      @keyframes fancy-stroke-pulse {
-        0% { 
-          stroke-width: 2px;
-          stroke-opacity: 0.7;
-          filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
-        }
-        50% { 
-          stroke-width: 3px;
-          stroke-opacity: 1;
-          filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.9));
-        }
-        100% { 
-          stroke-width: 2px;
-          stroke-opacity: 0.7;
-          filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
-        }
-      }
-      
-      .journey-start-block {
-        stroke: url(#journey-start-gradient);
-        stroke-width: 2px;
-        animation: fancy-stroke-pulse 2s infinite;
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-
   // Custom tooltip component - memoized to avoid recalculations
   const TooltipComponent = React.memo(
     ({
@@ -490,22 +455,7 @@ export default function GithubActivityCalendar({
               <ActivityCalendar
                 data={visibleData}
                 labels={{
-                  months: [
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'May',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Oct',
-                    'Nov',
-                    'Dec',
-                  ],
-                  weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                  totalCount: `${processedData.totalContributions} contributions`,
+                  totalCount: `${processedData.totalContributions} total contributions`,
                 }}
                 renderBlock={(block, value) => {
                   const isUserAccountCreatedAt =
@@ -530,7 +480,6 @@ export default function GithubActivityCalendar({
                               ? {
                                   stroke: '#ffd700',
                                   strokeWidth: 0.5,
-                                  strokeOpacity: 1,
                                 }
                               : { stroke: 'none' }),
                             border: isUserAccountCreatedAt

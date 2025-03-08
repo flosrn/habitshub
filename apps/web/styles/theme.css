@@ -113,4 +113,22 @@
       transform: translateY(0px);
     }
   }
+
+  @keyframes fancy-stroke-pulse {
+    0% {
+      stroke-width: 2px;
+      stroke-opacity: 0.7;
+      filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
+    }
+    50% {
+      stroke-width: 3px;
+      stroke-opacity: 1;
+      filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.9));
+    }
+    100% {
+      stroke-width: 2px;
+      stroke-opacity: 0.7;
+      filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
+    }
+  }
 }

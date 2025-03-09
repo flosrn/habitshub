@@ -51,11 +51,7 @@ export default function DashboardHubStats() {
         'animate-in fade-in flex flex-col space-y-4 pb-36 duration-500'
       }
     >
-      <div
-        className={
-          'grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
-        }
-      >
+      <div className={'grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4'}>
         <GithubStreak
           githubData={githubData}
           isLoading={isGithubLoading}
@@ -403,42 +399,6 @@ function BadgeWithTrend(props: React.PropsWithChildren<{ trend: string }>) {
     >
       <span className={className}>{props.children}</span>
     </Badge>
-  );
-}
-
-function Figure(props: React.PropsWithChildren) {
-  return (
-    <div className={'font-heading text-2xl font-semibold'}>
-      {props.children}
-    </div>
-  );
-}
-
-function Trend(
-  props: React.PropsWithChildren<{
-    trend: 'up' | 'down' | 'stale';
-  }>,
-) {
-  const Icon = useMemo(() => {
-    switch (props.trend) {
-      case 'up':
-        return <ArrowUp className={'h-3 w-3 text-green-500'} />;
-      case 'down':
-        return <ArrowDown className={'text-destructive h-3 w-3'} />;
-      case 'stale':
-        return <Menu className={'h-3 w-3 text-orange-500'} />;
-    }
-  }, [props.trend]);
-
-  return (
-    <div>
-      <BadgeWithTrend trend={props.trend}>
-        <span className={'flex items-center space-x-1'}>
-          {Icon}
-          <span>{props.children}</span>
-        </span>
-      </BadgeWithTrend>
-    </div>
   );
 }
 

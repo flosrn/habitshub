@@ -54,7 +54,7 @@ export function GithubActivity({
     <Card className={cn('flex h-full flex-col', className)}>
       <CardHeader className="flex-shrink-0 p-4 pb-2 sm:p-6">
         <CardTitle className="flex items-center text-base sm:text-lg">
-          <BarChart className="text-primary mr-2 h-4 w-4" />
+          <BarChart className="text-primary mr-2 h-5 w-5" />
           Recent Activity
         </CardTitle>
       </CardHeader>

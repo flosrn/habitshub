@@ -5,6 +5,7 @@ import type { Activity } from 'react-activity-calendar';
 import { ActivityCalendar } from 'react-activity-calendar';
 
 import { useUser } from '@kit/supabase/hooks/use-user';
+import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui/card';
 import {
   Tooltip,
   TooltipContent,
@@ -191,72 +192,82 @@ export default function GithubActivityCalendar({
 
   // Render the calendar with fixed size (1 year)
   return (
-    <div className="w-full">
-      <div className="mb-2 flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">
-          {totalContributions} contributions in the last year
-        </p>
-      </div>
+    <Card className="w-full">
+      <CardHeader className="px-6 pb-2">
+        <CardTitle className="flex items-center text-lg">
+          <Sparkles className="text-primary mr-2 h-5 w-5" />
+          Activity Calendar
+        </CardTitle>
+      </CardHeader>
 
-      <div className="w-full">
-        <ActivityCalendar
-          data={processedData}
-          labels={{
-            totalCount: `${totalContributions} total contributions`,
-          }}
-          blockMargin={2.5}
-          renderBlock={(block, value) => {
-            const isUserAccountCreatedAt =
-              value.date.split('T')[0] === userAccountCreatedAt?.split('T')[0];
+      <CardContent className="w-full">
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-muted-foreground text-sm">
+            {totalContributions} contributions in the last year
+          </p>
+        </div>
 
-            // Check if the date is after the user account creation date
-            const isAfterRegistration = userAccountCreatedAt
-              ? new Date(value.date).setHours(0, 0, 0, 0) >=
-                new Date(userAccountCreatedAt).setHours(0, 0, 0, 0)
-              : false;
+        <div className="w-full">
+          <ActivityCalendar
+            data={processedData}
+            labels={{
+              totalCount: `${totalContributions} total contributions`,
+            }}
+            blockMargin={2.5}
+            renderBlock={(block, value) => {
+              const isUserAccountCreatedAt =
+                value.date.split('T')[0] ===
+                userAccountCreatedAt?.split('T')[0];
 
-            return (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {React.cloneElement(block, {
-                    style: {
-                      ...((block.props.style as React.CSSProperties) || {}),
-                      cursor: 'pointer',
-                      ...(isAfterRegistration
-                        ? {
-                            stroke: '#ffd700',
-                            strokeWidth: 0.5,
-                          }
-                        : { stroke: 'none', opacity: 0.5 }),
-                      border: isUserAccountCreatedAt
-                        ? '2px solid #ffd700'
-                        : 'none',
-                    },
-                    className: cn(
-                      block.props.className,
-                      isUserAccountCreatedAt ? 'journey-start-block' : '',
-                    ),
-                  })}
-                </TooltipTrigger>
-                <TooltipPortal>
-                  <TooltipContent side="top" sideOffset={5} className="p-0">
-                    <TooltipComponent
-                      date={value.date}
-                      count={value.count}
-                      level={value.level}
-                      isUserAccountCreatedAt={isUserAccountCreatedAt}
-                    />
-                  </TooltipContent>
-                </TooltipPortal>
-              </Tooltip>
-            );
-          }}
-          theme={{
-            light: ['#f0f0f0', '#c4edde', '#7ac7c4', '#306873', '#0a4c6a'],
-            dark: ['#1f2937', '#0e4429', '#006d32', '#26a641', '#39d353'],
-          }}
-        />
-      </div>
-    </div>
+              // Check if the date is after the user account creation date
+              const isAfterRegistration = userAccountCreatedAt
+                ? new Date(value.date).setHours(0, 0, 0, 0) >=
+                  new Date(userAccountCreatedAt).setHours(0, 0, 0, 0)
+                : false;
+
+              return (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {React.cloneElement(block, {
+                      style: {
+                        ...((block.props.style as React.CSSProperties) || {}),
+                        cursor: 'pointer',
+                        ...(isAfterRegistration
+                          ? {
+                              stroke: '#ffd700',
+                              strokeWidth: 0.5,
+                            }
+                          : { stroke: 'none', opacity: 0.5 }),
+                        border: isUserAccountCreatedAt
+                          ? '2px solid #ffd700'
+                          : 'none',
+                      },
+                      className: cn(
+                        block.props.className,
+                        isUserAccountCreatedAt ? 'journey-start-block' : '',
+                      ),
+                    })}
+                  </TooltipTrigger>
+                  <TooltipPortal>
+                    <TooltipContent side="top" sideOffset={5} className="p-0">
+                      <TooltipComponent
+                        date={value.date}
+                        count={value.count}
+                        level={value.level}
+                        isUserAccountCreatedAt={isUserAccountCreatedAt}
+                      />
+                    </TooltipContent>
+                  </TooltipPortal>
+                </Tooltip>
+              );
+            }}
+            theme={{
+              light: ['#f0f0f0', '#c4edde', '#7ac7c4', '#306873', '#0a4c6a'],
+              dark: ['#1f2937', '#0e4429', '#006d32', '#26a641', '#39d353'],
+            }}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
